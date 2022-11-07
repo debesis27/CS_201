@@ -3,85 +3,87 @@
 #include <string.h>
 #include <math.h>
 
-int fibonacciArray[] = {377, 233, 144, 89, 55, 34, 21, 13, 8, 5, 3, 2, 1, 1};
+int fibonacciArray[] = {377, 233, 144, 89, 55, 34, 21, 13, 8, 5, 3, 2, 1, 1};           //array containing first 14 fibonacci numbers
 
-int BinaryToDecimal(int* arr);
-void DecimalToBinary(int num, int* binaryArray);
-int DecimalToFibToDecimal(int num);
+int BinaryToDecimal(int* arr);                              //function to convert binary number to its decimal form
+void DecimalToBinary(int num, int* binaryArray);            //function to convert decimal number in binary form
+int DecimalToFibToDecimal(int num);                         //function to represent a decimal number in its fibonacci format
 
 int main()
 {
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     //Start of Encryption
-    int size = 0;
-    char inputArray[26];
-    char a;
-    int* THEarray = malloc(size*sizeof(int));
+    int size = 0;                                           //size of input text
+    char inputArray[26];                                    //circular queue that takes user text as input
+    char a;                                                 //to take in one character at a time as input
+    int* encrpytedArray = malloc(size*sizeof(int));         //Array containing the final encrypted text
 
-    char encryptArray[26];
+    char keywordArray[26];                                  //Array containing the keywords
+
     for(int i = 0; i < 26; i++)
     {
-        encryptArray[i] = 'A' + i;
+        keywordArray[i] = 'A' + i;                         
     }
 
-    for(int i = 0; a != '\n'; i++)
+    for(int i = 0; a != '\n'; i++)                         //The loop continues until the enter key is pressed
     {
         scanf("%c", &a);
         inputArray[i%26] = a;
         size++;
         
-        inputArray[i%26] = inputArray[i%26] ^ encryptArray[i%26];
-        THEarray = realloc(THEarray, size*sizeof(int));
-        THEarray[i] = inputArray[i%26];
+        inputArray[i%26] = inputArray[i%26] ^ keywordArray[i%26];       //Xoring the input string (ASCII) with the keywords
+        encrpytedArray = realloc(encrpytedArray, size*sizeof(int));     //Realloctaing space for encrypted array
+        encrpytedArray[i] = inputArray[i%26];
 
-        int binaryArray[14] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        for(int j = 0; j < 14; j++)
+        int binaryArray[14] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};  //Array to represent the binary form of the ASCII 
+
+        for(int j = 0; j < 14; j++)                        //converting the decimal numbers into Fibonacci format to be sent as binary numbers
         {
-            if(THEarray[i] >= fibonacciArray[j])
+            if(encrpytedArray[i] >= fibonacciArray[j])
             {
                 binaryArray[j]++;
-                THEarray[i] -= fibonacciArray[j];
+                encrpytedArray[i] -= fibonacciArray[j];
             }
         }
         
-        THEarray[i] = BinaryToDecimal(binaryArray);
+        encrpytedArray[i] = BinaryToDecimal(binaryArray);   //converting the binary form into decimal format
     }
 
     printf("Encrypted Text: ");
-    for(int i = 0; i < size - 1; i++)                  
+    for(int i = 0; i < size - 1; i++)                       //printing the encrypted text                
     {
-        printf("%d ", THEarray[i]);
+        printf("%d ", encrpytedArray[i]); 
     }
 
     //End of Encryption
     //-----------------------------------------------------------------------------------------------------------------------------------------------
     //Start of Decryption
 
-    int decFib[size - 1];
-    char outputArray[size - 1];
+    int decryptionArray[size - 1];                                              //Array for the decryption process
+    char outputArray[size - 1];                                                 //Decrypted array
     
-    for(int i = 0; i < size - 1; i++)
+    for(int i = 0; i < size - 1; i++)                                           //Copying the encrypted text into the decryption array                                   
     {
-        decFib[i] = THEarray[i];
+        decryptionArray[i] = encrpytedArray[i];
     }
 
-    for(int i = 0; i < size - 1; i++)
+    for(int i = 0; i < size - 1; i++)                                           //Converting the recieved encrypted text to fibonacci format and then to decimal form
     {
-        decFib[i] = DecimalToFibToDecimal(decFib[i]);
+        decryptionArray[i] = DecimalToFibToDecimal(decryptionArray[i]);     
     }
 
-    for(int i = 0; i < size - 1; i++)
+    for(int i = 0; i < size - 1; i++)                                           //Xoring with the keyword array
     {
-        decFib[i] = decFib[i] ^ encryptArray[i%26];
+        decryptionArray[i] = decryptionArray[i] ^ keywordArray[i%26];
     }
 
-    for(int i = 0; i < size - 1; i++)
+    for(int i = 0; i < size - 1; i++)                                           //Converting the ASCII code into its corresponding character 
     {
-        outputArray[i] = decFib[i];
+        outputArray[i] = decryptionArray[i];
     }
 
     printf("\n\nDecrypted Text: ");
-    for(int i = 0; i < size - 1; i++)
+    for(int i = 0; i < size - 1; i++)                                           //Printing the decrypted text
     {
         printf("%c", outputArray[i]);
     }
@@ -113,7 +115,7 @@ void DecimalToBinary(int num, int* binaryArray)
         i++;
     }
 
-    for(int i = 0; i < 14; i++)
+    for(int i = 0; i < 14; i++)                             //Reversing the array to represent the binary number in its standard form
     {
         binaryArray[i] = binaryNum[13 - i];
     }
